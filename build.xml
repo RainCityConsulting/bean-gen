@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="bgen" basedir="." default="jar">
+
+    <loadfile property="version" srcFile="${basedir}/.version">
+        <filterchain>
+            <striplinebreaks/>
+        </filterchain>
+    </loadfile>
+
+    <path id="compile.classpath">
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement location="target/classes"/>
+    </path>
+
+    <path id="test.classpath">
+        <!--
+        <path refid="compile.classpath"/>
+        -->
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement location="target/classes"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="target"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="target/classes"/>
+        <javac debug="true" srcdir="src/main/java" destdir="target/classes" classpathref="compile.classpath"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="target/bgen-${version}.jar" basedir="target/classes"/>
+    </target>
+
+    <target name="test" depends="jar">
+        <taskdef name="bgen" classname="com.rcc.bgen.BGenTask" classpathref="test.classpath"/>
+
+        <mkdir dir="target/test"/>
+
+        <bgen
+                classpathref="test.classpath"
+                destdir="target/test"
+                templateFile="src/test/resources/Test.template.java">
+            <fileset dir="src/test/resources" includes="*.properties"/>
+            <globmapper from="*.properties" to="*.java"/>
+        </bgen>
+    </target>
+</project>
