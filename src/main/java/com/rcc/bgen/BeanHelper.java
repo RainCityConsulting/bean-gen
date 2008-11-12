@@ -16,6 +16,7 @@ public class BeanHelper {
 
     public String listToDelimitedString(List list) {
         StringBuilder buf = new StringBuilder();
+        if (list == null) { return ""; }
         for (Object o : list) {
             if (buf.length() > 0) { buf.append(", "); }
             buf.append(o.toString());
